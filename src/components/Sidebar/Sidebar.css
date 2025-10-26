@@ -1,0 +1,13 @@
+.sidebar-container {
+    position: relative;
+    background: lightgray;
+}
+
+.handle-navigator {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 4px;
+    cursor: ns-resize;
+}
