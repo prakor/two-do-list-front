@@ -7,7 +7,7 @@ import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
-    <nav className="h-screen w-64 flex flex-row bg-gray-50 relative">
+    <nav className="h-screen w-95 flex flex-row bg-gray-50 relative">
       {/* side bar */}
       <div className="w-full">
         <div className="flex flex-row justify-between m-2">
