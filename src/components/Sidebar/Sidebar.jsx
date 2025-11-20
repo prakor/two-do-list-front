@@ -1,3 +1,4 @@
+import { NavLink } from "react-router";
 import { FaRegUserCircle, FaInbox, FaCalendarAlt } from "react-icons/fa";
 import { FiSidebar } from "react-icons/fi";
 import { IoIosArrowDown } from "react-icons/io";
@@ -46,34 +47,34 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <div className="rounded-md hover:bg-gray-200 cursor-pointer">
-                    <button className="flex flex-row p-2 items-center gap-2 cursor-pointer">
+                    <NavLink to="app/inbox" className="flex flex-row p-2 items-center gap-2 cursor-pointer">
                       <FaInbox className="text-lg" />
                       <span>Inbox</span>
-                    </button>
+                    </NavLink>
                   </div>
                 </li>
                 <li>
                   <div className="rounded-md hover:bg-gray-200 cursor-pointer">
-                    <button className="flex flex-row p-2 items-center gap-2 cursor-pointer">
+                    <NavLink to="app/today" className="flex flex-row p-2 items-center gap-2 cursor-pointer">
                       <MdToday className="text-lg" />
                       <span>Today</span>
-                    </button>
+                    </NavLink>
                   </div>
                 </li>
                 <li>
                   <div className="rounded-md hover:bg-gray-200 cursor-pointer">
-                    <button className="flex flex-row p-2 items-center gap-2 cursor-pointer">
+                    <NavLink to="app/upcoming" className="flex flex-row p-2 items-center gap-2 cursor-pointer">
                       <FaCalendarAlt className="text-lg" />
                       <span>Upcoming</span>
-                    </button>
+                    </NavLink>
                   </div>
                 </li>
               </ul>
               <div className="my-project">
                 <div className="rounded-md hover:bg-gray-200">
-                  <button className="flex flex-row p-2 items-center gap-2">
+                  <NavLink to="app/projects" className="flex flex-row p-2 items-center gap-2">
                     <span className="font-semibold">My Projects</span>
-                  </button>
+                  </NavLink>
                 </div>
               </div>
             </div>

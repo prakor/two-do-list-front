@@ -1,0 +1,14 @@
+.add_task_button {
+	display: flex;
+	flex-direction: row;
+	justify-items: center;
+	align-items: center;
+	font-size: 14px;
+  width: 100%;
+	gap: 8px;
+	cursor: pointer;
+}
+
+.add_task_button:hover {
+	color: oklch(66.6% 0.179 58.318);
+}

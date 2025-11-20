@@ -20,11 +20,11 @@ const AppRoutes = () => {
         </Route>
 
         {/* Private */}
-        <Route path="app" element={<MainLayout />}>
-          <Route path="inbox" element={<Inbox />} />
-          <Route path="today" element={<Today />} />
-          <Route path="upcoming" element={<Upcoming />} />
-          <Route path="projects" element={<Projects />} />
+        <Route element={<MainLayout />}>
+          <Route path="app/inbox" element={<Inbox />} />
+          <Route path="app/today" element={<Today />} />
+          <Route path="app/upcoming" element={<Upcoming />} />
+          <Route path="app/projects" element={<Projects />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

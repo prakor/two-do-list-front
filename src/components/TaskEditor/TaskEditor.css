@@ -1,0 +1,92 @@
+.task_editor {
+  width: 100%;
+}
+
+.task_editor_form {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.task_editor_form:focus-within {
+  border-color: #b8b8b8;
+}
+
+.task_editing_area {
+  padding: 8px 8px 0px 8px;
+}
+
+.task_editor_input_field {
+  max-height: 200px;
+  margin-bottom: 8px;
+}
+
+.task_editor_name .task_editor_input_name {
+    height: 24px;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  color: #575555;
+}
+
+.task_editor_description .task_editor_input_description {
+  height: 23px;
+  width: 100%;
+  font-size: 13px;
+  color: #575555;
+}
+
+.task_editor_footer {
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-top: 1px solid #e6e6e6;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.task_editor_action {
+  display: flex;
+  gap: 8px;
+}
+
+.task_editor_cancel_button {
+  height: 32px;
+  width: 32px;
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.task_editor_cancel_button svg {
+  font-size: 24px;
+  color: gray;
+}
+
+.task_editor_cancel_button:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+}
+
+.task_editor_submit_button {
+  height: 32px;
+  width: 32px;
+  background-color: #fe9a00;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.task_editor_submit_button svg {
+  font-size: 15px;
+  color: #fff;
+}
+
+.task_editor_submit_button:hover {
+  background-color: #e17100;
+}
