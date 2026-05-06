@@ -47,7 +47,14 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <div className="rounded-md hover:bg-gray-200 cursor-pointer">
-                    <NavLink to="app/inbox" className="flex flex-row p-2 items-center gap-2 cursor-pointer">
+                    <NavLink
+                      to="app/inbox"
+                      // className="flex flex-row p-2 items-center gap-2 cursor-pointer"
+                      className={({ isActive }) =>
+                        `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                        }`
+                      }
+                    >
                       <FaInbox className="text-lg" />
                       <span>Inbox</span>
                     </NavLink>
@@ -55,7 +62,14 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <div className="rounded-md hover:bg-gray-200 cursor-pointer">
-                    <NavLink to="app/today" className="flex flex-row p-2 items-center gap-2 cursor-pointer">
+                    <NavLink
+                      to="app/today"
+                      // className="flex flex-row p-2 items-center gap-2 cursor-pointer"
+                      className={({ isActive }) =>
+                        `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                        }`
+                      }
+                    >
                       <MdToday className="text-lg" />
                       <span>Today</span>
                     </NavLink>
@@ -63,7 +77,14 @@ const Sidebar = () => {
                 </li>
                 <li>
                   <div className="rounded-md hover:bg-gray-200 cursor-pointer">
-                    <NavLink to="app/upcoming" className="flex flex-row p-2 items-center gap-2 cursor-pointer">
+                    <NavLink
+                      to="app/upcoming"
+                      // className="flex flex-row p-2 items-center gap-2 cursor-pointer"
+                      className={({ isActive }) =>
+                        `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                        }`
+                      }
+                    >
                       <FaCalendarAlt className="text-lg" />
                       <span>Upcoming</span>
                     </NavLink>
@@ -72,7 +93,14 @@ const Sidebar = () => {
               </ul>
               <div className="my-project">
                 <div className="rounded-md hover:bg-gray-200">
-                  <NavLink to="app/projects" className="flex flex-row p-2 items-center gap-2">
+                  <NavLink
+                    to="app/projects"
+                    // className="flex flex-row p-2 items-center gap-2"
+                    className={({ isActive }) =>
+                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                      }`
+                    }
+                  >
                     <span className="font-semibold">My Projects</span>
                   </NavLink>
                 </div>

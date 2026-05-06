@@ -1,8 +1,15 @@
+// src/components/LayoutOptionsModal/LayoutOptionsModal.jsx
 import "./LayoutOptionsModal.css";
 import { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setTypeLayout } from "@store/slices/layoutOptionsSlice";
+
 import { MdOutlineViewWeek, MdOutlineViewList } from "react-icons/md";
 
 const LayoutOptionsModal = () => {
+  const dispatch = useDispatch();
+  const typeLayout = useSelector((state) => state.layoutOptions.typeLayout);
+
   const [isOpen, setIsOpen] = useState(false);
   const [layout, setLayout] = useState("list");
   const modalRef = useRef(null);
@@ -31,6 +38,12 @@ const LayoutOptionsModal = () => {
     };
   }, [isOpen]);
 
+  const handleLayoutChange = (layout) => {
+    dispatch(setTypeLayout(layout));
+    // ปิด modal หลังเลือก (optional)
+    // setIsOpen(false);
+  };
+
   return (
     <>
       <button
@@ -38,7 +51,7 @@ const LayoutOptionsModal = () => {
         className="layout_options_button"
         onClick={() => setIsOpen(!isOpen)}
       >
-        {layout === "list" ? <MdOutlineViewWeek /> : <MdOutlineViewList />}
+        {typeLayout === "list" ? <MdOutlineViewWeek /> : <MdOutlineViewList />}
       </button>
 
       {/* modal */}
@@ -54,10 +67,10 @@ const LayoutOptionsModal = () => {
                   type="radio"
                   name="layout"
                   value="list"
-                  checked={layout === "list"}
-                  onChange={() => setLayout("list")}
+                  checked={typeLayout === "list"}
+                  onChange={() => handleLayoutChange("list")}
                 />
-                <div className="type_item" aria-checked={layout === "list"}>
+                <div className="type_item" aria-checked={typeLayout === "list"}>
                   <MdOutlineViewWeek />
                   List
                 </div>
@@ -67,10 +80,10 @@ const LayoutOptionsModal = () => {
                   type="radio"
                   name="layout"
                   value="board"
-                  checked={layout === "board"}
-                  onChange={() => setLayout("board")}
+                  checked={typeLayout === "board"}
+                  onChange={() => handleLayoutChange("board")}
                 />
-                <div className="type_item" aria-checked={layout === "board"}>
+                <div className="type_item" aria-checked={typeLayout === "board"}>
                   <MdOutlineViewList />
                   Board
                 </div>
