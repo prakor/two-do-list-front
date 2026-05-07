@@ -27,7 +27,7 @@ const Login = () => {
       </div>
       <div className="flex flex-row justify-center gap-4 mt-4">
         <div className="w-lg justify-center lg:w-full flex flex-col gap-5">
-          <div className="login-title text-3xl font-semibold">Log in</div>
+          <div className="login-title text-4xl font-semibold">Log in</div>
           <hr className="border-gray-300" />
           <form action="" className="flex flex-col gap-4">
             {/* login */}

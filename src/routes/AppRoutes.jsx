@@ -1,3 +1,4 @@
+// src/routes/AppRoutes.jsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "../layouts/Layout.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
