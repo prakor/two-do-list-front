@@ -1,17 +1,13 @@
-// src/components/LayoutOptionsModal/LayoutOptionsModal.jsx
 import "./LayoutOptionsModal.css";
 import { useState, useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setTypeLayout } from "@store/slices/layoutOptionsSlice";
-
 import { MdOutlineViewWeek, MdOutlineViewList } from "react-icons/md";
 
 const LayoutOptionsModal = () => {
   const dispatch = useDispatch();
   const typeLayout = useSelector((state) => state.layoutOptions.typeLayout);
-
   const [isOpen, setIsOpen] = useState(false);
-  const [layout, setLayout] = useState("list");
   const modalRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -29,8 +25,6 @@ const LayoutOptionsModal = () => {
 
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
@@ -38,10 +32,8 @@ const LayoutOptionsModal = () => {
     };
   }, [isOpen]);
 
-  const handleLayoutChange = (layout) => {
-    dispatch(setTypeLayout(layout));
-    // ปิด modal หลังเลือก (optional)
-    // setIsOpen(false);
+  const handleLayoutChange = (layoutType) => {
+    dispatch(setTypeLayout(layoutType));
   };
 
   return (
@@ -49,12 +41,11 @@ const LayoutOptionsModal = () => {
       <button
         ref={buttonRef}
         className="layout_options_button"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => setIsOpen((current) => !current)}
       >
         {typeLayout === "list" ? <MdOutlineViewWeek /> : <MdOutlineViewList />}
       </button>
 
-      {/* modal */}
       {isOpen && (
         <div ref={modalRef} className="layout_options_modal">
           <div className="layout_options_content">

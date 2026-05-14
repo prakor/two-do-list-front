@@ -1,105 +1,106 @@
-// src/services/axiosInstance.js
-import axios from 'axios';
+import axios from "axios";
+import {
+  clearStoredAuth,
+  getStoredAuth,
+  setStoredAuth,
+} from "@services/authStorage";
 
-const API_BASE_URL = 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
-// สร้าง axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
-// ตัวแปรเก็บ promise ของการ refresh token
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach(prom => {
+  failedQueue.forEach((pending) => {
     if (error) {
-      prom.reject(error);
-    } else {
-      prom.resolve(token);
+      pending.reject(error);
+      return;
     }
+    pending.resolve(token);
   });
   failedQueue = [];
 };
 
-// Request Interceptor - เพิ่ม token ทุก request
+const redirectToLogin = () => {
+  clearStoredAuth();
+  window.location.assign("/login");
+};
+
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const { accessToken } = getStoredAuth();
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response Interceptor - จัดการ token expired
 axiosInstance.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // ถ้า token expired (401) และยังไม่เคย retry
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest?._retry) {
       if (isRefreshing) {
-        // ถ้ากำลัง refresh อยู่ ให้รอ
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then(token => {
+          .then((token) => {
             originalRequest.headers.Authorization = `Bearer ${token}`;
             return axiosInstance(originalRequest);
           })
-          .catch(err => {
-            return Promise.reject(err);
-          });
+          .catch((queueError) => Promise.reject(queueError));
       }
 
       originalRequest._retry = true;
       isRefreshing = true;
 
-      const refreshToken = localStorage.getItem('refreshToken');
-
+      const { refreshToken } = getStoredAuth();
       if (!refreshToken) {
-        // ไม่มี refresh token ให้ logout
-        localStorage.clear();
-        window.location.href = '/login';
+        redirectToLogin();
         return Promise.reject(error);
       }
 
       try {
-        // เรียก API refresh token
-        const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+        const refreshResponse = await axios.post(`${API_BASE_URL}/auth/refresh`, {
           refreshToken,
         });
 
-        const { accessToken, refreshToken  } = response.data;
-        
-        // เก็บ token ใหม่
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
+        const accessToken =
+          refreshResponse.data?.accessToken ||
+          refreshResponse.data?.tokens?.accessToken;
+        const nextRefreshToken =
+          refreshResponse.data?.refreshToken ||
+          refreshResponse.data?.tokens?.refreshToken ||
+          refreshToken;
+        const user = refreshResponse.data?.user ?? getStoredAuth().user;
 
-        // ประมวลผล requests ที่รออยู่
+        if (!accessToken) {
+          throw new Error("Missing access token from refresh response");
+        }
+
+        setStoredAuth({
+          accessToken,
+          refreshToken: nextRefreshToken,
+          user,
+        });
+
         processQueue(null, accessToken);
-
-        // ลอง request ใหม่
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        
-        // Refresh token หมดอายุ ให้ logout
-        localStorage.clear();
-        window.location.href = '/login';
+        redirectToLogin();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
