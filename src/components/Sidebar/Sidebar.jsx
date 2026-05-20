@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { NavLink } from "react-router-dom";
 import { FaRegUserCircle, FaInbox, FaCalendarAlt } from "react-icons/fa";
@@ -8,18 +8,77 @@ import { MdOutlineAddCircle, MdToday } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import "./Sidebar.css";
 
+const SIDEBAR_MIN_WIDTH = 150;
+const SIDEBAR_MAX_WIDTH = 320;
+const SIDEBAR_DEFAULT_WIDTH = 280;
+
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [width, setWidth] = useState(SIDEBAR_DEFAULT_WIDTH);
+  const [isResizing, setIsResizing] = useState(false);
+
+  const startXRef = useRef(0);
+  const startWidthRef = useRef(SIDEBAR_DEFAULT_WIDTH);
+
   const userName = useSelector((state) => state.auth.user?.name) || "Workspace";
 
   const toggleCollapse = () => {
-    setIsCollapsed((current) => !current);
+    setIsCollapsed((current) => {
+      if (current) {
+        setWidth(SIDEBAR_DEFAULT_WIDTH);
+      }
+      return !current;
+    });
   };
+
+  const handleResizeStart = (e) => {
+    if (isCollapsed) return;
+    setIsResizing(true);
+    startXRef.current = e.clientX;
+    startWidthRef.current = width;
+    document.body.style.userSelect = "none";
+    document.body.style.cursor = "col-resize";
+  };
+
+  useEffect(() => {
+    const handleResizeMove = (e) => {
+      if (!isResizing) return;
+      const delta = e.clientX - startXRef.current;
+      const nextWidth = startWidthRef.current + delta;
+
+      if (nextWidth < SIDEBAR_MIN_WIDTH) {
+        setIsCollapsed(true);
+        setIsResizing(false);
+        document.body.style.userSelect = "";
+        document.body.style.cursor = "";
+        return;
+      }
+
+      const clamped = Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, nextWidth));
+      setIsCollapsed(false);
+      setWidth(clamped);
+    };
+
+    const handleResizeEnd = () => {
+      if (!isResizing) return;
+      setIsResizing(false);
+      document.body.style.userSelect = "";
+      document.body.style.cursor = "";
+    };
+
+    window.addEventListener("mousemove", handleResizeMove);
+    window.addEventListener("mouseup", handleResizeEnd);
+
+    return () => {
+      window.removeEventListener("mousemove", handleResizeMove);
+      window.removeEventListener("mouseup", handleResizeEnd);
+    };
+  }, [isResizing]);
 
   return (
     <nav
       className="h-screen bg-gray-50 relative flex-shrink-0 transition-all duration-200 border-r border-gray-200"
-      style={{ width: isCollapsed ? "0px" : "280px" }}
+      style={{ width: isCollapsed ? "0px" : `${width}px` }}
     >
       <div className={`h-full overflow-hidden ${isCollapsed ? "hidden" : "block"}`}>
         <div className="flex flex-row justify-between m-2">
@@ -65,8 +124,7 @@ const Sidebar = () => {
                   <NavLink
                     to="/app/inbox"
                     className={({ isActive }) =>
-                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${
-                        isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
                       }`
                     }
                   >
@@ -80,8 +138,7 @@ const Sidebar = () => {
                   <NavLink
                     to="/app/today"
                     className={({ isActive }) =>
-                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${
-                        isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
                       }`
                     }
                   >
@@ -95,8 +152,7 @@ const Sidebar = () => {
                   <NavLink
                     to="/app/upcoming"
                     className={({ isActive }) =>
-                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${
-                        isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                      `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
                       }`
                     }
                   >
@@ -111,8 +167,7 @@ const Sidebar = () => {
                 <NavLink
                   to="/app/projects"
                   className={({ isActive }) =>
-                    `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${
-                      isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
+                    `flex flex-row p-2 items-center gap-2 rounded-md cursor-pointer transition-colors ${isActive ? "bg-amber-100 text-amber-700 font-medium" : "hover:bg-gray-200"
                     }`
                   }
                 >
@@ -124,7 +179,11 @@ const Sidebar = () => {
         </div>
       </div>
 
-      <div className="handle-navigator bg-gray-50 hover:bg-gray-200" />
+      <div
+        className={`handle-navigator ${isResizing ? "is-resizing" : ""}`}
+        onMouseDown={handleResizeStart}
+      />
+
       {isCollapsed && (
         <button
           onClick={toggleCollapse}
