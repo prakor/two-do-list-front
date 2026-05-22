@@ -1,3 +1,4 @@
+// src/store/slices/authSlice.js
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import authService from "@services/authService";
 import {
@@ -46,8 +47,8 @@ const initialState = {
   user: storedAuth.user,
   accessToken: storedAuth.accessToken,
   refreshToken: storedAuth.refreshToken,
-  isAuthenticated: true,
-  // isAuthenticated: Boolean(storedAuth.accessToken),
+  // isAuthenticated: true,
+  isAuthenticated: Boolean(storedAuth.accessToken),
   isLoading: false,
   error: null,
 };

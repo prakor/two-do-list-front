@@ -17,6 +17,11 @@ const axiosInstance = axios.create({
 
 let isRefreshing = false;
 let failedQueue = [];
+let authFailureHandler = null;
+
+export const setAuthFailureHandler = (handler) => {
+  authFailureHandler = typeof handler === "function" ? handler : null;
+};
 
 const processQueue = (error, token = null) => {
   failedQueue.forEach((pending) => {
@@ -29,9 +34,11 @@ const processQueue = (error, token = null) => {
   failedQueue = [];
 };
 
-const redirectToLogin = () => {
+const handleAuthFailure = () => {
   clearStoredAuth();
-  window.location.assign("/login");
+  if (authFailureHandler) {
+    authFailureHandler();
+  }
 };
 
 axiosInstance.interceptors.request.use(
@@ -67,7 +74,7 @@ axiosInstance.interceptors.response.use(
 
       const { refreshToken } = getStoredAuth();
       if (!refreshToken) {
-        redirectToLogin();
+        handleAuthFailure();
         return Promise.reject(error);
       }
 
@@ -100,7 +107,7 @@ axiosInstance.interceptors.response.use(
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        redirectToLogin();
+        handleAuthFailure();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
