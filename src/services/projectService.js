@@ -24,10 +24,6 @@ const projectService = {
     const response = await axiosInstance.get("/projects");
     console.log('--- Response from getProjects:', response);
     return response.data.data;
-    // return withErrorMapping(async () => {
-    //   const response = await axiosInstance.get("/projects", { params });
-    //   return unwrapResponse(response);
-    // }, "Failed to fetch projects");
   },
 
   getProjectById: async (id) => {

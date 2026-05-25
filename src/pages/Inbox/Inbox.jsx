@@ -1,35 +1,27 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import BoardView from "@components/BoardView/BoardView";
-import ListView from "@components/ListView/ListView";
-import { selectProjects, fetchProjects, selectProjectLoadingStates, selectProjectError } from "@store/slices/projectSlice"; 
+import { useSelector } from "react-redux";
+import ListViewInbox from "@components/ListViewInbox/ListViewInbox";
+import BoardViewInbox from "@components/BoardViewInbox/BoardViewInbox";
+import { useInboxItems } from "@hooks/useInboxItems";
+
 const Inbox = () => {
-  const dispatch = useDispatch();
   const typeLayout = useSelector((state) => state.layoutOptions.typeLayout);
-  const projects = useSelector(selectProjects);
-  // const { isLoadingList } = useSelector(selectProjectLoadingStates);
-  // const projectError = useSelector(selectProjectError);
+  const { inboxItems, loading, error } = useInboxItems();
 
-  useEffect(() => {
-      console.log("Inbox component mounted");
-    dispatch(fetchProjects());
-
-    console.log('--- Current projects in state:', projects);
-  }, []);
+   if (loading) {
+     return <div>Loading inbox...</div>;
+   }
 
   const renderView = () => {
     if (typeLayout === "list") {
-      return <ListView />;
+      return <ListViewInbox inboxItems={inboxItems} />;
     }
 
-    return <BoardView />;
+    return <BoardViewInbox inboxItems={inboxItems} />;
   };
 
   return (
     <div className="px-7">
-      <pre>
-       { projects.length > 0 ? JSON.stringify(projects, null, 2) : "No projects found"  }
-      </pre>
       { renderView()}
     </div>
   );
